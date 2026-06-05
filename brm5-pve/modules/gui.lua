@@ -205,7 +205,7 @@ function GUI:init(services, config, callbacks)
     local main = Instance.new("Frame", self.screenGui)
     main.Size = UDim2.new(0, 500, 0, 350)
     main.Position = UDim2.new(0.5, -250, 0.5, -175)
-    main.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+    main.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
     main.BorderSizePixel = 0
     main.Active = true
     main.Visible = config.guiVisible
