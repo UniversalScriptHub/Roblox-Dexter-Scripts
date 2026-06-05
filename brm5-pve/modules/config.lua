@@ -14,6 +14,10 @@ Config.MAX_NPC_DETECTION_RADIUS = 3000
 Config.npcDetectionRadius = Config.MAX_NPC_DETECTION_RADIUS
 Config.CONFIG_FILE = "brm5_pve_config.json"
 
+-- WARNA BIRU NEON
+Config.neonBlueR, Config.neonBlueG, Config.neonBlueB = 0, 150, 255
+Config.neonBlueColor = Color3.fromRGB(0, 150, 255)
+
 -- TOGGLES (State)
 Config.highlightEnabled = false  -- Visibility markers
 Config.sizingEnabled = false     -- Target sizing
@@ -21,6 +25,7 @@ Config.showTargetBox = false     -- Shows target bounds
 Config.fullBrightEnabled = false -- Removes shadows/darkness
 Config.guiVisible = true         -- Menu visibility
 Config.isUnloaded = false        -- To stop the script
+Config.neonBlueMode = false       -- Mode warna biru neon untuk cham
 
 -- WEAPON PATCHES
 Config.patchOptions = { 
@@ -49,6 +54,26 @@ function Config:updateHiddenColor(r, g, b)
     self.hiddenColor = Color3.fromRGB(self.hiddenR, self.hiddenG, self.hiddenB)
 end
 
+-- Fungsi untuk mengaktifkan/menonaktifkan mode biru neon
+function Config:setNeonBlueMode(enabled)
+    self.neonBlueMode = enabled
+    if enabled then
+        -- Set kedua warna ke biru neon
+        self:updateVisibleColor(self.neonBlueR, self.neonBlueG, self.neonBlueB)
+        self:updateHiddenColor(self.neonBlueR, self.neonBlueG, self.neonBlueB)
+    else
+        -- Kembalikan ke warna default (hijau untuk visible, merah untuk hidden)
+        self:updateVisibleColor(0, 255, 0)
+        self:updateHiddenColor(255, 0, 0)
+    end
+end
+
+-- Fungsi toggle untuk memudahkan penggunaan
+function Config:toggleNeonBlueMode()
+    self:setNeonBlueMode(not self.neonBlueMode)
+    return self.neonBlueMode
+end
+
 function Config:updateNPCDetectionRadius(value)
     self.npcDetectionRadius = math.clamp(
         math.floor(value or self.npcDetectionRadius),
@@ -68,6 +93,7 @@ function Config:serialize()
         showTargetBox = self.showTargetBox,
         fullBrightEnabled = self.fullBrightEnabled,
         npcDetectionRadius = self.npcDetectionRadius,
+        neonBlueMode = self.neonBlueMode,
         patchOptions = {
             recoil = self.patchOptions.recoil,
             firemodes = self.patchOptions.firemodes
@@ -90,6 +116,9 @@ function Config:applySavedData(data)
     if data.sizingEnabled ~= nil then self.sizingEnabled = data.sizingEnabled end
     if data.showTargetBox ~= nil then self.showTargetBox = data.showTargetBox end
     if data.fullBrightEnabled ~= nil then self.fullBrightEnabled = data.fullBrightEnabled end
+    if data.neonBlueMode ~= nil then
+        self:setNeonBlueMode(data.neonBlueMode)
+    end
     if type(data.patchOptions) == "table" then
         if data.patchOptions.recoil ~= nil then self.patchOptions.recoil = data.patchOptions.recoil end
         if data.patchOptions.firemodes ~= nil then self.patchOptions.firemodes = data.patchOptions.firemodes end
